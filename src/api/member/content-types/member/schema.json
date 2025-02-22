@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "members",
+  "info": {
+    "singularName": "member",
+    "pluralName": "members",
+    "displayName": "Member",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "records": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::record.record",
+      "mappedBy": "member"
+    }
+  }
+}
