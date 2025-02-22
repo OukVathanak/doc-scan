@@ -16,10 +16,20 @@ export default factories.createCoreController(
           const scannedText: string = await TesseractHelper.scanImage(imageUrl);
 
           const prompt: string = `
-            ${scannedText}
+            Extract the following details from the provided text:
 
-            "Base on the text extract me the sender, receiver, title, description, and the category of the document."
-          `;
+            - Sender,
+            - Receiver,
+            - Title,
+            - Description,
+            - Date,
+            - Category.
+
+            If any of these details are missing, return 'null' for the corresponding attribute. Separate each attribute by a comma.
+            
+            Input text:
+            ${scannedText}
+            `;
 
           // OpenAI API Call with Axios
           const chatResponse = await axios.post(

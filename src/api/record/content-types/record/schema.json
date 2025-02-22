@@ -11,14 +11,11 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "sender": {
+    "title": {
       "type": "string"
     },
-    "reciever": {
-      "type": "string"
-    },
-    "date": {
-      "type": "date"
+    "description": {
+      "type": "text"
     },
     "file": {
       "type": "media",
@@ -29,11 +26,25 @@
         "files"
       ]
     },
-    "member": {
+    "date": {
+      "type": "date"
+    },
+    "sender": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::member.member",
-      "inversedBy": "records"
+      "inversedBy": "sentRecords"
+    },
+    "receiver": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::member.member",
+      "inversedBy": "receivedRecords"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::category.category"
     }
   }
 }

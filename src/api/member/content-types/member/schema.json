@@ -17,11 +17,17 @@
     "role": {
       "type": "string"
     },
-    "records": {
+    "sentRecords": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::record.record",
-      "mappedBy": "member"
+      "mappedBy": "sender"
+    },
+    "receivedRecords": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::record.record",
+      "mappedBy": "receiver"
     }
   }
 }
