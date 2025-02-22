@@ -12,44 +12,75 @@ export default factories.createCoreController(
     return {
       async scanFile(ctx: any) {
         try {
-          const imageUrl = ctx.request.body.imageUrl;
-          const scannedText: string = await TesseractHelper.scanImage(imageUrl);
+          // const imageUrl = ctx.request.body.imageUrl;
 
-          const prompt: string = `
-            Extract the following details from the provided text:
+          const response = {
+            sender: "Sender",
+            receiver: "receiver",
+            title: "title",
+            description: "desc",
+            date: new Date(),
+            category: "category",
+          };
 
-            - Sender,
-            - Receiver,
-            - Title,
-            - Description,
-            - Date,
-            - Category.
-
-            If any of these details are missing, return 'null' for the corresponding attribute. Separate each attribute by a comma.
-            
-            Input text:
-            ${scannedText}
-            `;
-
-          // OpenAI API Call with Axios
-          const chatResponse = await axios.post(
-            "https://api.openai.com/v1/chat/completions",
-            {
-              model: "gpt-4",
-              messages: [{ role: "user", content: prompt }],
-              temperature: 0.7,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${process.env.CHATGPT_API_KEY}`, // Replace with your API key
+          // Fetch sender name
+          const sender = await strapi
+            .documents("api::member.member")
+            .findFirst({
+              filters: {
+                name: { $eq: response.sender },
               },
-            }
-          );
+            });
 
-          console.log(chatResponse);
+          // Check if sender doesn't exist create new one
+          if (!sender) {
+            await strapi.documents("api::member.member").create({
+              data: {
+                name: response.sender,
+                role: "user",
+              },
+            });
+          }
 
-          return chatResponse.data;
+          // Fetch receiver
+          const receiver = await strapi
+            .documents("api::member.member")
+            .findFirst({
+              filters: {
+                name: { $eq: response.receiver },
+              },
+            });
+
+          // Check if receiver doesn't exist create new one
+          if (!receiver) {
+            await strapi.documents("api::member.member").create({
+              data: {
+                name: response.receiver,
+                role: "user",
+              },
+            });
+          }
+
+          // Fetch category
+          const category = await strapi
+            .documents("api::category.category")
+            .findFirst({
+              filters: {
+                slug: { $eq: response.category },
+              },
+            });
+
+          // Check if receiver doesn't exist create new one
+          if (!category) {
+            await strapi.documents("api::category.category").create({
+              data: {
+                name: response.category,
+                slug: response.category.toLowerCase().replace(/\s+/g, "-"),
+              },
+            });
+          }
+
+          return "hi";
         } catch (error) {
           throw error;
         }
